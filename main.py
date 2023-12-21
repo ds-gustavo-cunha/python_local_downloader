@@ -24,16 +24,14 @@ bold_warning = "\033[1m\033[93m"
 ###################
 
 
-def get_urls_(
-    link: str
-) -> list:
+def get_urls_(link: str) -> list:
     """
     Get a youtube link and return a list of links to download
-    
+
     Args
         link: str with youtube link
     """
-    
+
     # try to get link
     try:
         YouTube(link)
@@ -45,9 +43,7 @@ def get_urls_(
         return [link]
 
 
-def convert_video_to_audio_(
-    video_file_path: str
-) -> None:
+def convert_video_to_audio_(video_file_path: str) -> None:
     """
     Get the path to a given .mp4 file and convert it to .mp3
 
@@ -70,11 +66,7 @@ def convert_video_to_audio_(
 
 
 def download_video_(
-    video_link: str, 
-    folder_to_save: str, 
-    save_as_audio: bool, 
-    i: int, 
-    N: int
+    video_link: str, folder_to_save: str, save_as_audio: bool, i: int, N: int
 ) -> None:
     """
     Download youtue video given the video link
@@ -107,7 +99,7 @@ def download_video_(
     # define path to save
     if folder_to_save != ".":
         video_file_path = folder_to_save
-    # save on current folder        
+    # save on current folder
     else:
         video_file_path = "."
 
@@ -122,18 +114,14 @@ def download_video_(
         convert_video_to_audio_(os.path.join(video_file_path, yt_file_name))
 
 
-def download(
-    link: str, 
-    folder_to_save: str = ".", 
-    save_as_audio: bool = False
-) -> None:
+def download(link: str, folder_to_save: str = ".", save_as_audio: bool = False) -> None:
     """
     Download video/audio files given an Youtube URL
 
     Args
         link: str with Youtube URL
         folder_to_save: str with folder name to save files inside
-        save_as_audio: bool to indicate if files have to be saved as .mp3 
+        save_as_audio: bool to indicate if files have to be saved as .mp3
             instead of .mp4
     """
 
@@ -149,10 +137,20 @@ def download(
     for i, link in enumerate(links):
         # print info
         print(f"\n{bold}Downloading video {i+1} of {N}{end}")
-        # download videos
-        download_video_(link, folder_to_save, save_as_audio, i, N)
-        # print info
-        print(f"{bold}    Video {i+1} is downloaded \o/{end}")
+        # try to download videos
+        try:
+            # download videos
+            download_video_(link, folder_to_save, save_as_audio, i, N)
+            # print info
+            print(f"{bold}    Video {i+1} is downloaded \o/{end}")
+        # in case of errors
+        except Exception as e:
+            # print log
+            print(
+                f"The following error when downloading track {i+1} out of {len(links)}: {e}"
+            )
+            # skip to next track
+            continue
 
 
 ############
